@@ -1,21 +1,15 @@
 def read_dimacs_file(filename):
-    """
-    Citește fișierul CNF și extrage clauzele
-    """
     clauses = []
     with open(filename, 'r') as file:
         for line in file:
             if line.startswith('c') or line.startswith('p'):
-                continue  # Ignorăm comentariile și linia de tip 'p'
-            clause = [int(x) for x in line.strip().split() if x != '0']  # Eliminăm 0
+                continue  
+            clause = [int(x) for x in line.strip().split() if x != '0']  
             if clause:
-                clauses.append(set(clause))  # Folosim set pentru a elimina duplicate
+                clauses.append(set(clause)) 
     return clauses
 
 def resolve(ci, cj):
-    """
-    Aplica rezolutia pe două clauze pentru a obține noi clauze
-    """
     resolvents = []
     for literal in ci:
         if -literal in cj:
@@ -24,9 +18,6 @@ def resolve(ci, cj):
     return resolvents
 
 def resolution_solver(clauses):
-    """
-    Rezolvă satisfiabilitatea folosind algoritmul de rezoluție
-    """
     clauses = set(frozenset(clause) for clause in clauses)
     new = set()
 
@@ -36,19 +27,18 @@ def resolution_solver(clauses):
             resolvents = resolve(ci, cj)
             for resolvent in resolvents:
                 if not resolvent:
-                    return False  # Clauza goală => formula este nesatisfiabilă
+                    return False 
                 new.add(resolvent)
 
         if new.issubset(clauses):
-            return True  # Nu se mai pot adăuga clauze noi => formula este satisfiabilă
+            return True  
 
-        clauses |= new  # Adăugăm noile clauze la setul de clauze
+        clauses |= new  
 
 if __name__ == '__main__':
-    # Specifică calea corectă către fișierul CNF
-    input_file = r'D:\sat\rezolutie.py\clause_set.cnf'  # Calea corectă către fișier
-    clauses = read_dimacs_file(input_file)  # Citește clauzele din fișier
-    satisfiable = resolution_solver(clauses)  # Verifică satisfiabilitatea formulei
+    input_file = r'D:\sat\rezolutie.py\clause_set.cnf'  
+    clauses = read_dimacs_file(input_file)  
+    satisfiable = resolution_solver(clauses)  
 
     if satisfiable:
         print("Formula este satisfiabilă.")
